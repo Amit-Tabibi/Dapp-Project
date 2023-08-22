@@ -22,7 +22,7 @@ const Header = () => {
       <div className="flex space-x-2 justify-center">
         <button
           type="button"
-          className="inline-block px-6 py-2.5 bg-blue-400
+          className="inline-block px-6 py-2.5 bg-blue-450
         text-black font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:text-white"
         >
           Connect Wallet
