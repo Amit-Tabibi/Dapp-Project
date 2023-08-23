@@ -1,6 +1,7 @@
 import React from "react";
 import Campaigns from "../components/Campaigns";
 import Hero from "../components/Hero";
+import CreateCampaign from "../components/CreateCampaign";
 
 const Home = () => {
   return (
@@ -17,6 +18,7 @@ const Home = () => {
           Load More Campaigns
         </button>
       </div>
+      <CreateCampaign />
     </>
   );
 };

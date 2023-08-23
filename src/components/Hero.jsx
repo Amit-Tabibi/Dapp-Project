@@ -1,4 +1,5 @@
 import React from "react";
+import { setGlobalState } from "../store";
 
 const Hero = () => {
   return (
@@ -17,8 +18,9 @@ const Hero = () => {
           className="inline-block px-6 py-2.5 bg-blue-400
         text-white font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md hover:bg-blue-700 hover:text-white"
+        onClick={() => setGlobalState('createModal', 'scale-100')}
         >
-          Add Campagin
+          Add Campaign
         </button>
         <button
           type="button"
