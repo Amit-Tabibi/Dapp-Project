@@ -1,6 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import Identicons from "react-identicons";
+
 const Campaigns = () => {
   return (
     <div className="flex flex-col px-6 ">
@@ -29,9 +29,9 @@ const CampaignCard = ({ card, id }) => (
         <div flex flex-col>
           <div className="flex justify-between items-center mb-3">
             <Identicons
-              className="rounded-full shadow-md"
+              className=" shadow-md"
               string="0x15......1ea2"
-              size={15}
+              size={20}
             />
             <small className="text-gray-700">0x15......1ea2</small>
           </div>
@@ -40,8 +40,8 @@ const CampaignCard = ({ card, id }) => (
 
         <div className="w-full bg-gray-300">
           <div
-            className="bg-green-600 text-xs font-meduim text-blue-100 text-center
-          p-0.5 leading-none rounded-l-full h-1"
+            className="bg-green-600 text-xs font-medium text-blue-100 text-center
+          p-0.5 leading-none rounded-l-full "
             style={{ width: "50%" }}
           ></div>
         </div>

@@ -15,7 +15,7 @@ const Hero = () => {
         <button
           type="button"
           className="inline-block px-6 py-2.5 bg-blue-400
-        text-white font-meduim text-xs leading-tight uppercase 
+        text-white font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md hover:bg-blue-700 hover:text-white"
         >
           Add Campagin
@@ -23,7 +23,7 @@ const Hero = () => {
         <button
           type="button"
           className="inline-block px-6 py-2.5 border border-blue-400
-        text-blue-500 font-meduim text-xs leading-tight uppercase 
+        text-blue-500 font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md bg-transparent hover:bg-blue-700 hover:text-white"
         >
           Donate
