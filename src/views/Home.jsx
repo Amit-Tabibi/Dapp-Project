@@ -2,6 +2,7 @@ import React from "react";
 import Campaigns from "../components/Campaigns";
 import Hero from "../components/Hero";
 import CreateCampaign from "../components/CreateCampaign";
+import AddButton from "../components/AddButton";
 
 const Home = () => {
   return (
@@ -12,13 +13,14 @@ const Home = () => {
         <button
           type="button"
           className="inline-block px-6 py-2.5 bg-blue-400
-        text-white font-meduim text-xs leading-tight uppercase 
+        text-white font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md hover:bg-blue-700 hover:text-white"
         >
           Load More Campaigns
         </button>
       </div>
       <CreateCampaign />
+      <AddButton />
     </>
   );
 };

@@ -1,5 +1,6 @@
 import Identicons from "react-identicons";
 import { FaEthereum } from "react-icons/fa";
+import { setGlobalState } from "../store";
 const CampaignDetails = () => {
   return (
     <div className="py-24 px-6 flex justify-center">
@@ -75,6 +76,7 @@ const CampaignDetails = () => {
             className="inline-block px-6 py-2.5 bg-blue-400
         text-white font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md hover:bg-blue-700 hover:text-white"
+            onClick={() => setGlobalState("donateModal", "scale-100")}
           >
             Donate
           </button>
@@ -83,6 +85,7 @@ const CampaignDetails = () => {
             className="inline-block px-6 py-2.5 bg-gray-400
         text-white font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md hover:bg-gray-700 hover:text-white"
+            onClick={() => setGlobalState("updateModal", "scale-100")}
           >
             EDIT
           </button>
@@ -91,6 +94,7 @@ const CampaignDetails = () => {
             className="inline-block px-6 py-2.5 bg-red-400
         text-white font-medium text-xs leading-tight uppercase 
         rounded-full shadow-md hover:bg-red-700 hover:text-white"
+            onClick={() => setGlobalState("deleteModal", "scale-100")}
           >
             DELETE
           </button>
