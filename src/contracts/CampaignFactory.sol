@@ -136,18 +136,18 @@ contract CampaignFactory {
         );
 
         campaigns[id].status = statusEnum.DELETED;
-        preformRefund(id); 
+        performRefund(id); 
 
         emit Action (
             id,
-            "PROJECT DELETED",
+            "CAMPAIGN DELETED",
             msg.sender,
             block.timestamp
         );
         return true;
     }
 
-    function preformRefund(uint id) internal {
+    function performRefund(uint id) internal {
         for(uint i=0;i < donorsOf [id].length; i++){
         address _owner = donorsOf[id][i].owner;
         uint _contribution = donorsOf[id][i].contribution;
@@ -182,14 +182,79 @@ contract CampaignFactory {
 
         emit Action (
             id,
-            "DONTED",
+            "DONATED",
             msg.sender,
             block.timestamp
         );
 
-        // to add line 188-202
+        if(campaigns[id].raised >= campaigns[id].cost) {
+            campaigns[id].status = statusEnum.APPROVED;
+            balance += campaigns[id].raised;
+            performPayout(id);
+            return true;
+        }
+
+        if(block.timestamp >= campaigns[id].expiresAt) {
+            campaigns[id].status = statusEnum.APPROVED;
+            balance += campaigns[id].raised;
+            performPayout(id);
+            return true;
+        }
+        
+        return true;
     }
+
+    function performPayout(uint id) internal {
+        uint raised = campaigns[id].raised;
+        uint tax = (raised * campaignTax) / 100;
+
+        campaigns[id].status = statusEnum.PAIDOUT;
+
+        payTo(campaigns[id].owner, raised - tax);
+        payTo(owner, tax);
+
+        balance -= campaigns[id].raised;
+        
+        emit Action(
+            id,
+             "CAMPAIGN PAID OUT DONATION", 
+             msg.sender, 
+             block.timestamp
+             );
+    }
+
+    // function requestRefund
+
+    function payOutCampaign(uint id) public returns (bool) {
+        require(campaigns[id].status == statusEnum.APPROVED,
+        "Campaign no longer APPROVED");
+        require(
+            msg.sender == campaigns[id].owner||
+            msg.sender == owner,
+            "Unauthorized Entity");
  
+        performPayout(id);
+        return true;
+    }
+
+    function changeTax(uint _taxPct) public ownerOnly {
+        campaignTax = _taxPct;
+    }
+
+    function getCampaign(uint id) public view returns (campaignStruct memory) {
+        require(campaignExist[id], "Campaign not found");
+
+        return campaigns[id];
+    }
+
+    function getCampaigns() public view returns (campaignStruct[] memory) {
+        return campaigns;
+    }
+
+    function getDonors(uint id) public view returns (donorStruct[] memory) {
+        return donorsOf[id];
+    }
+
     function payTo(address to, uint256 amount) internal {
         (bool success, )= payable(to).call{value:amount}("");
         require (success);
