@@ -1,14 +1,36 @@
 import {FaTimes} from 'react-icons/fa'
 import { useGlobalState, setGlobalState } from '../store'
+import { useState } from 'react'
 
 const CreateCampaign = () => {
 const [createModal] = useGlobalState('createModal')
+const [title, setTitle] = useState('')
+const [description, setDescription] = useState('')
+const [amount, setAmount] = useState('')
+const [date, setDate] = useState('')
+const [imageURL, setImageURL] = useState('')
+
+
+const handleSubmit = (e) => {
+    e.preventDefault()
+    if(!title || !description || !amount || !date || !imageURL) return 
+
+    const params = {
+        title,
+        description,
+        amount,
+        date,
+        imageURL
+    }
+
+    console.log(params);
+}
   return (
     <div className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 transform transition-transform duration-300 ${createModal}`}
     >
         <div className="bg-white shadow-xl shadow-black
         rounded-xl w-11/12 md:w-2/5 h- 7/12 p-6">
-            <form className="flex flex-col ">
+            <form onSubmit= {handleSubmit} className="flex flex-col ">
                 <div className="flex justify-between items-center">
                     <p className="font-semibold">Add Campaign</p>
                     <button 
@@ -36,6 +58,8 @@ const [createModal] = useGlobalState('createModal')
                      type="text" 
                      name="title"
                      placeholder="Title"
+                     onChange={(e) => setTitle(e.target.value)}
+                     value={title}
                      required
                      />
                 </div>
@@ -50,6 +74,8 @@ const [createModal] = useGlobalState('createModal')
                      min={0.01}
                      name="amount"
                      placeholder="Amount (ETH)"
+                     onChange={(e) => setAmount(e.target.value)}
+                     value={amount}
                      required
                      />
                 </div>
@@ -62,6 +88,8 @@ const [createModal] = useGlobalState('createModal')
                      type="date" 
                      name="date"
                      placeholder="Expires"
+                     onChange={(e) => setDate(e.target.value)}
+                     value={date}
                      required
                      />
                 </div>
@@ -74,6 +102,8 @@ const [createModal] = useGlobalState('createModal')
                      type="text" 
                      name="imageURL"
                      placeholder="Image URL"
+                     onChange={(e) => setImageURL(e.target.value)}
+                     value={imageURL}
                      required
                      />
                 </div>
@@ -86,6 +116,8 @@ const [createModal] = useGlobalState('createModal')
                      type="text" 
                      name="description"
                      placeholder="Description"
+                     onChange={(e) => setDescription(e.target.value)}
+                     value={description}
                      required
                      ></textarea>
                 </div>

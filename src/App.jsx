@@ -6,8 +6,10 @@ import { useEffect } from "react";
 import { isWalletConnected } from "./services/blockchain";
 
 const App = () => {
-  useEffect(async() => {
-    await isWalletConnected()
+  useEffect(() => {
+    (async () => {
+      await isWalletConnected()
+    })();
   }, [])
   
   return (
