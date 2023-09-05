@@ -1,29 +1,37 @@
 import {FaTimes} from 'react-icons/fa'
 import { useGlobalState, setGlobalState } from '../store'
 import { useState } from 'react'
+import { createCampaign } from '../services/blockchain'
+import { toast } from 'react-toastify'
 
 const CreateCampaign = () => {
 const [createModal] = useGlobalState('createModal')
 const [title, setTitle] = useState('')
 const [description, setDescription] = useState('')
-const [amount, setAmount] = useState('')
+const [cost, setCost] = useState('')
 const [date, setDate] = useState('')
 const [imageURL, setImageURL] = useState('')
 
+const toTimeStamp = (dateStr) => {
+    const dateObj = Date.parse(dateStr)
+    return dateObj / 1000
 
-const handleSubmit = (e) => {
+}
+
+const handleSubmit = async (e) => {
     e.preventDefault()
-    if(!title || !description || !amount || !date || !imageURL) return 
+    if(!title || !description || !cost || !date || !imageURL) return 
 
     const params = {
         title,
         description,
-        amount,
-        date,
+        cost,
+        expiresAt: toTimeStamp(date),
         imageURL
     }
 
-    console.log(params);
+    await createCampaign(params)
+    toast.success('Campaign Created Successfully, will reflect in 30 seconds.')
 }
   return (
     <div className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 transform transition-transform duration-300 ${createModal}`}
@@ -43,7 +51,7 @@ const handleSubmit = (e) => {
                 <div className='flex justify-center items-center mt-5'>
                     <div className='rounded-xl overflow-hidden h-20 w-20'>
                     <img
-                      src="https://avatars.githubusercontent.com/u/6250754?s=200&v=4"
+                      src= {imageURL || "https://avatars.githubusercontent.com/u/6250754?s=200&v=4"}
                       alt="campaign title"
                       className="h-full w-full object-cover cursor-pointer"
                     />
@@ -74,8 +82,8 @@ const handleSubmit = (e) => {
                      min={0.01}
                      name="amount"
                      placeholder="Amount (ETH)"
-                     onChange={(e) => setAmount(e.target.value)}
-                     value={amount}
+                     onChange={(e) => setCost(e.target.value)}
+                     value={cost}
                      required
                      />
                 </div>

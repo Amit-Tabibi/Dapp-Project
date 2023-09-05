@@ -4,6 +4,7 @@ import Campaign from "./views/Campaign";
 import Home from "./views/Home";
 import { useEffect } from "react";
 import { isWalletConnected } from "./services/blockchain";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   useEffect(() => {
@@ -19,6 +20,19 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/campaigns/:id" element={<Campaign />} />
       </Routes>
+
+      <ToastContainer
+        position="bottom-center"
+        autoClose = {5000}
+        hideProgressBar = {false}
+        newestOnTop = {false}
+        closeOnClick
+        rtl = {false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 };

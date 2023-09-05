@@ -17,7 +17,7 @@ const connectWallet = async () => {
         reportError(error)
     }
 }
-
+ 
 const isWalletConnected = async () => {
     try {
         if(!ethereum) return alert('Please install Metamask')
@@ -46,9 +46,45 @@ const isWalletConnected = async () => {
     }
 }
 
+const getEthereumContract = async () => {
+    const connectedAccount = getGlobalState('connectedAccount')
+
+    if(connectedAccount)
+    {
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(contractAddress,contractAbi,signer)
+
+        return contract
+    }
+
+    else
+    {
+        return getGlobalState('contract')
+    }
+}
+
+const createCampaign = async ({
+    title,
+    description,
+    imageURL,
+    cost,
+    expiresAt
+}) => {
+    try {
+        if(!ethereum) return alert('Please install Metamask')
+        const contract = await getEthereumContract()
+        cost = ethers.utils.parseEther(cost)
+        await contract.createCampaign(title, description, imageURL, cost, expiresAt)
+    }
+    catch (error){
+        reportError(error)
+    }
+}
+
 const reportError = (error) => {
     console.log(error.message)
     throw new Error('No ethereum object.')
 }
 
-export {connectWallet, isWalletConnected}
+export {connectWallet, isWalletConnected, createCampaign }
