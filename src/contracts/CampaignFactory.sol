@@ -35,7 +35,7 @@ contract CampaignFactory {
         string imageURL;
         uint cost;
         uint raised;
-        uint timestap;
+        uint timestamp;
         uint expiresAt;
         uint donors;
         statusEnum status;
@@ -84,7 +84,7 @@ contract CampaignFactory {
         campaign.description = description;
         campaign.imageURL = imageURL;
         campaign.cost = cost;
-        campaign.timestap = block.timestamp;
+        campaign.timestamp = block.timestamp;
         campaign.expiresAt = expiresAt;
 
         campaigns.push(campaign);

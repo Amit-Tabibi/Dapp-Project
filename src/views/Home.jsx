@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Campaigns from "../components/Campaigns";
 import Hero from "../components/Hero";
 import CreateCampaign from "../components/CreateCampaign";
 import AddButton from "../components/AddButton";
+import { loadCampaigns } from "../services/blockchain";
 
 const Home = () => {
+  useEffect(async () => {
+    await loadCampaigns();
+  }, []);
+
   return (
     <>
       <Hero />
