@@ -4,16 +4,25 @@ import Hero from "../components/Hero";
 import CreateCampaign from "../components/CreateCampaign";
 import AddButton from "../components/AddButton";
 import { loadCampaigns } from "../services/blockchain";
+import { useGlobalState } from "../store";
 
 const Home = () => {
-  useEffect(async () => {
-    await loadCampaigns();
-  }, []);
+  const [campaigns] = useGlobalState('campaigns')
+
+  useEffect(() => {
+  (async () => {
+    try {
+      await loadCampaigns();
+    } catch (error) {
+      console.log(error);
+    }
+  })();
+}, []);
 
   return (
     <>
       <Hero />
-      <Campaigns />
+      <Campaigns campaigns={campaigns}/>
       <div className="flex justify-center items-center my-5">
         <button
           type="button"

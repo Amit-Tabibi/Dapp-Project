@@ -88,11 +88,9 @@ const loadCampaigns = async () => {
     const campaigns = await contract.getCampaigns();
     const stats = await contract.stats();
 
-    //setGlobalState("stats", structureStats(stats));
-    //setGlobalState("campaigns", structuredCampaigns(campaigns));
+    setGlobalState("stats", structureStats(stats));
+    setGlobalState( "campaigns", structuredCampaigns(campaigns));
 
-    console.log(structuredCampaigns(campaigns));
-    //console.log(campaigns);
   } catch (error) {
     reportError(error);
   }
