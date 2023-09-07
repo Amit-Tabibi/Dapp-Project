@@ -2,15 +2,42 @@ import { Link } from "react-router-dom";
 import Identicons from "react-identicons";
 import { daysRemaining, truncate } from "../store";
 import { FaEthereum } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 const Campaigns = ({ campaigns }) => {
+  const [end, setEnd] = useState(4)
+  const [count] = useState(4)
+  const [collection, setCollection] = useState([])
+
+  const getCollection = () => campaigns.slice(0, end)
+
+  useEffect(() => {
+    setCollection(getCollection())
+  }, [campaigns, end])
+
   return (
-    <div className="flex flex-col px-6 ">
+    <div className="flex flex-col px-6 mb-7">
       <div className="flex justify-center items-center flex-wrap ">
-        {campaigns.map((campaign, i) => (
+        {collection.map((campaign, i) => (
             <CampaignCard key={i} campaign={campaign} />
           ))}
       </div>
+
+      {campaigns.length > collection.length ? (
+        <div className="flex justify-center items-center my-5">
+        <button
+          type="button"
+          className="inline-block px-6 py-2.5 bg-blue-400
+        text-white font-medium text-xs leading-tight uppercase 
+        rounded-full shadow-md hover:bg-blue-700 hover:text-white"
+        onClick={() => setEnd(end + count)}
+        >
+          Load More Campaigns
+        </button>
+      </div>
+      ) : null}
+      
+
     </div>
   );
 };

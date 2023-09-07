@@ -23,16 +23,6 @@ const Home = () => {
     <>
       <Hero />
       <Campaigns campaigns={campaigns}/>
-      <div className="flex justify-center items-center my-5">
-        <button
-          type="button"
-          className="inline-block px-6 py-2.5 bg-blue-400
-        text-white font-medium text-xs leading-tight uppercase 
-        rounded-full shadow-md hover:bg-blue-700 hover:text-white"
-        >
-          Load More Campaigns
-        </button>
-      </div>
       <CreateCampaign />
       <AddButton />
     </>
