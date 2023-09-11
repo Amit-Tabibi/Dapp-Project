@@ -1,8 +1,10 @@
 import Identicons from "react-identicons";
 import { FaEthereum } from "react-icons/fa";
-import { daysRemaining, setGlobalState, truncate } from "../store";
+import { daysRemaining, setGlobalState, truncate, useGlobalState } from "../store";
 
 const CampaignDetails = ({ campaign }) => {
+  const [connectedAccount] = useGlobalState('connectedAccount')
+
   return (
     <div className="py-24 px-6 flex justify-center">
       <div className="flex justify-center flex-col md:w-2/3">
@@ -58,9 +60,9 @@ const CampaignDetails = ({ campaign }) => {
               </div>
 
             </div>
-          </div>
-        </div>
-        <p className="text-sm font-light mt-2"> {campaign?.description}</p>
+
+                     <div>
+          <p className="text-sm font-light mt-2"> {campaign?.description}</p>
 
         <div className="w-full bg-gray-300 mt-4">
           <div
@@ -79,41 +81,65 @@ const CampaignDetails = ({ campaign }) => {
         </div>
 
         <div className="flex justify-start items-center space-x-2 mt-4 ">
-          <button
-            type="button"
-            className="inline-block px-6 py-2.5 bg-blue-400
-        text-white font-medium text-xs leading-tight uppercase 
-        rounded-full shadow-md hover:bg-blue-700 hover:text-white"
-            onClick={() => setGlobalState("donateModal", "scale-100")}
-          >
-            Donate
+          {campaign?.status == 0 ? (
+            <button
+                type="button"
+                className="inline-block px-6 py-2.5 bg-blue-400
+                text-white font-medium text-xs leading-tight uppercase 
+                rounded-full shadow-md hover:bg-blue-700 hover:text-white"
+                onClick={() => setGlobalState("donateModal", "scale-100")}
+              >
+                Donate
           </button>
-          <button
-            type="button"
-            className="inline-block px-6 py-2.5 bg-gray-400
-        text-white font-medium text-xs leading-tight uppercase 
-        rounded-full shadow-md hover:bg-gray-700 hover:text-white"
-            onClick={() => setGlobalState("updateModal", "scale-100")}
-          >
-            EDIT
-          </button>
-          <button
-            type="button"
-            className="inline-block px-6 py-2.5 bg-red-400
-        text-white font-medium text-xs leading-tight uppercase 
-        rounded-full shadow-md hover:bg-red-700 hover:text-white"
-            onClick={() => setGlobalState("deleteModal", "scale-100")}
-          >
-            DELETE
-          </button>
-          <button
-            type="button"
-            className="inline-block px-6 py-2.5 bg-orange-400
-        text-white font-medium text-xs leading-tight uppercase 
-        rounded-full shadow-md hover:bg-orange-700 hover:text-white"
-          >
-            PAYOUT
-          </button>
+          ) : null }
+           
+          {connectedAccount == campaign?.owner ? (
+            campaign?.status != 3 ? (
+              campaign?.status == 1 ? (
+              <button
+                type="button"
+                className="inline-block px-6 py-2.5 bg-orange-400
+                text-white font-medium text-xs leading-tight uppercase 
+                rounded-full shadow-md hover:bg-orange-700 hover:text-white"
+              >
+                PAYOUT
+              </button>
+              ) : campaign?.status != 4 ? (
+              <>
+              <button
+                type="button"
+                className="inline-block px-6 py-2.5 bg-gray-400
+                text-white font-medium text-xs leading-tight uppercase 
+                rounded-full shadow-md hover:bg-gray-700 hover:text-white"
+                onClick={() => setGlobalState("updateModal", "scale-100")}
+              >
+                EDIT
+              </button>
+              <button
+                type="button"
+                className="inline-block px-6 py-2.5 bg-red-400
+                text-white font-medium text-xs leading-tight uppercase 
+                rounded-full shadow-md hover:bg-red-700 hover:text-white"
+                onClick={() => setGlobalState("deleteModal", "scale-100")}
+                >
+                DELETE
+              </button>
+            </>
+              ) : (
+                <button
+                type="button"
+                className="inline-block px-6 py-2.5 bg-gray-400
+                text-white font-medium text-xs leading-tight uppercase 
+                rounded-full shadow-md hover:bg-gray-700 hover:text-white"
+                >
+                Campaign Closed
+              </button>
+              )
+            ) : null
+          ) : null}
+        </div>
+         </div>
+          </div>
         </div>
       </div>
     </div>

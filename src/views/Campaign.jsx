@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CampaignDetails from "../components/CampaignDetails";
 import CampaignDoners from "../components/CampaignDoners";
 import UpdateCampaign from "../components/UpdateCampaign";
@@ -10,27 +10,29 @@ import { useGlobalState } from "../store";
 
 const Campaign = () => {
   const { id } = useParams()
+  const [loaded, setLoaded] = useState(false)
   const [campaign] = useGlobalState('campaign')
 
   useEffect(() => {
   (async () => {
     try {
       await loadCampaign(id);
+      setLoaded(true)
     } catch (error) {
       console.log(error);
     }
   })();
 }, []);
 
-  return (
+  return loaded ? (
     <>
       <CampaignDetails campaign = {campaign}/>
+      <UpdateCampaign campaign = {campaign} />
+      <DeleteCampaign campaign = {campaign} />
+      <DonateCampaign campaign = {campaign} />
       <CampaignDoners />
-      <UpdateCampaign />
-      <DonateCampaign />
-      <DeleteCampaign/>
     </>
-  );
+  ): null
 };
 
 export default Campaign;

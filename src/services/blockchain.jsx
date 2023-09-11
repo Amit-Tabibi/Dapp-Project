@@ -81,6 +81,55 @@ const createCampaign = async ({
   }
 };
 
+const updateCampaign = async ({
+  id,
+  title,
+  description,
+  imageURL,
+  expiresAt,
+}) => {
+  try {
+    if (!ethereum) return alert("Please install Metamask");
+
+    const contract = await getEthereumContract();
+    await contract.updateCampaign(
+      id,
+      title,
+      description,
+      imageURL,
+      expiresAt
+    );
+  } catch (error) {
+    reportError(error);
+  }
+};
+
+const deleteCampaign = async (id) => {
+  try {
+    if (!ethereum) return alert("Please install Metamask"); 
+    const contract = await getEthereumContract()
+    await contract.deleteCampaign(id)
+  } catch (error) {
+    reportError(error)
+  }
+};
+
+const donateCampaign = async (id, amount) => {
+  try {
+    if (!ethereum) return alert("Please install Metamask"); 
+    const connectedAccount = getGlobalState('connectedAccount')
+    const contract = await getEthereumContract()
+    amount = ethers.utils.parseEther(amount)
+
+    await contract.donateCampaign(id, {
+      from: connectedAccount,
+      value: amount._hex
+    })
+  } catch (error) {
+    reportError(error)
+  }
+};
+
 const loadCampaigns = async () => {
   try {
     if (!ethereum) return alert("Please install MetaMask");
@@ -150,4 +199,4 @@ const reportError = (error) => {
   throw new Error("No ethereum object.");
 };
 
-export { connectWallet, isWalletConnected, createCampaign, loadCampaigns, loadCampaign };
+export { connectWallet, isWalletConnected, createCampaign, updateCampaign, deleteCampaign, loadCampaigns, loadCampaign, donateCampaign};
