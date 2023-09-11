@@ -2,6 +2,7 @@ import abi from "../abis/src/contracts/CampaignFactory.sol/CampaignFactory.json"
 import address from "../abis/contractAddress.json";
 import { getGlobalState, setGlobalState } from "../store";
 import { ethers } from "ethers";
+import { json } from "react-router-dom";
 
 const { ethereum } = window;
 const contractAddress = address.address;
@@ -96,6 +97,21 @@ const loadCampaigns = async () => {
   }
 };
 
+const loadCampaign = async (id) => {
+  try {
+    if(!ethereum) return alert('Please install Metamask')
+    const contract = await getEthereumContract()
+    const  campaign = await contract.getCampaign(id)
+
+    setGlobalState('campaign', structuredCampaigns([campaign])[0])
+    console.log("Campaign Loaded...")
+  }
+    catch(error) {
+      alert(JSON.stringify(error.message))
+      reportError(error)
+    }
+  }
+
 const structuredCampaigns = (campaigns) =>
   campaigns
     .map((campaign) => ({
@@ -134,4 +150,4 @@ const reportError = (error) => {
   throw new Error("No ethereum object.");
 };
 
-export { connectWallet, isWalletConnected, createCampaign, loadCampaigns };
+export { connectWallet, isWalletConnected, createCampaign, loadCampaigns, loadCampaign };

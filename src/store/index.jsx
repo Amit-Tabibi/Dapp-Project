@@ -8,6 +8,7 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   deleteModal: "scale-0",
   connectedAccount: "",
   campaigns: [],
+  campaign: null, 
   stats: null,
 });
 
