@@ -4,7 +4,7 @@ import CampaignDoners from "../components/CampaignDoners";
 import UpdateCampaign from "../components/UpdateCampaign";
 import DonateCampaign from "../components/DonateCampaign";
 import DeleteCampaign from "../components/DeleteCampaign";
-import { loadCampaign } from "../services/blockchain";
+import { getDonors, loadCampaign } from "../services/blockchain";
 import { useParams } from "react-router-dom";
 import { useGlobalState } from "../store";
 
@@ -12,11 +12,13 @@ const Campaign = () => {
   const { id } = useParams()
   const [loaded, setLoaded] = useState(false)
   const [campaign] = useGlobalState('campaign')
+  const [donors] = useGlobalState('donors')
 
   useEffect(() => {
   (async () => {
     try {
       await loadCampaign(id);
+      await getDonors(id);
       setLoaded(true)
     } catch (error) {
       console.log(error);
@@ -30,7 +32,7 @@ const Campaign = () => {
       <UpdateCampaign campaign = {campaign} />
       <DeleteCampaign campaign = {campaign} />
       <DonateCampaign campaign = {campaign} />
-      <CampaignDoners />
+      <CampaignDoners donors = {donors} />
     </>
   ): null
 };

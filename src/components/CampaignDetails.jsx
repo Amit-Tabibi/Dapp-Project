@@ -1,9 +1,11 @@
 import Identicons from "react-identicons";
 import { FaEthereum } from "react-icons/fa";
 import { daysRemaining, setGlobalState, truncate, useGlobalState } from "../store";
+import { payOutCampaign } from "../services/blockchain";
 
 const CampaignDetails = ({ campaign }) => {
   const [connectedAccount] = useGlobalState('connectedAccount')
+  const expired = new Date().getTime() > Number(campaign?.expiresAt + '000')
 
   return (
     <div className="py-24 px-6 flex justify-center">
@@ -24,8 +26,7 @@ const CampaignDetails = ({ campaign }) => {
                 {campaign?.title}
               </h5>
               <small className="text-gray-500">
-                {new Date().getTime() >
-                Number(campaign?.expiresAt + '000') ? 'Expired' :
+                {expired ? 'Expired' :
                 daysRemaining(campaign?.expiresAt) + ' left'}
               </small>
             </div>
@@ -41,12 +42,14 @@ const CampaignDetails = ({ campaign }) => {
                 <small className="text-gray-700">{truncate(campaign?.owner, 4, 4, 11)}</small>
                 ) : null}
                 <small className="text-gray-500 font-bold">
-                  {campaign?.donors} Donor{campaign?.donors == 1 ? '' : 's'}
+                  {campaign?.donors} Donation{campaign?.donors == 1 ? '' : 's'}
                 </small>
               </div>
 
               <div className="font-bold">
-                {campaign?.status == 0 ? (
+                {expired ? (
+                <small className="text-red-500">EXPIRED</small>
+                ) :campaign?.status == 0 ? (
                 <small className="text-gray-500">OPEN</small>
                 ) : campaign?.status == 1 ? (
                   <small className="text-green-500">REACHED FINAL GOAL</small>
@@ -64,10 +67,10 @@ const CampaignDetails = ({ campaign }) => {
                      <div>
           <p className="text-sm font-light mt-2"> {campaign?.description}</p>
 
-        <div className="w-full bg-gray-300 mt-4">
+        <div className="w-full overflow-hidden bg-gray-300 mt-4">
           <div
             className="bg-green-600 text-xs font-medium text-blue-100 text-center
-          p-0.5 leading-none rounded-l-full "
+          p-0.5 leading-none rounded-l- full "
             style={{ width: `${ (campaign?.raised / campaign?.cost) * 100 }%` }}
           ></div>
         </div>
@@ -101,6 +104,7 @@ const CampaignDetails = ({ campaign }) => {
                 className="inline-block px-6 py-2.5 bg-orange-400
                 text-white font-medium text-xs leading-tight uppercase 
                 rounded-full shadow-md hover:bg-orange-700 hover:text-white"
+                onClick={() => payOutCampaign(campaign?.id)}
               >
                 PAYOUT
               </button>

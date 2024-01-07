@@ -10,6 +10,7 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   campaigns: [],
   campaign: null, 
   stats: null,
+  donors: [],
 });
 
 const truncate = (text, startChars, endChars, maxLength) => {

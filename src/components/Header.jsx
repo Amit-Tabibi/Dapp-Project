@@ -19,7 +19,7 @@ const Header = () => {
       text-xl text-black space-x-1
       "
       >
-        <span>Dapp</span>
+        <span>Donations Dapp</span>
         <FaEthereum />
       </Link>
       <div className="flex space-x-2 justify-center">

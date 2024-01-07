@@ -10,9 +10,10 @@ const DeleteCampaign = ({ campaign }) => {
 
   const handleSubmit = async () => {
     await deleteCampaign(campaign?.id);
-    toast.success("Campaign Dele ted Successfully, will reflect in 30 seconds.");
+    toast.success("Campaign Deleted Successfully, will reflect in 30 seconds.");
     setGlobalState("deleteModal", "scale-0")
-    navigate.push('/')
+    //navigate.push('/') --> this was instead of just navigate()
+    navigate('/')
   };
 
   return (

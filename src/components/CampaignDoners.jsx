@@ -1,7 +1,10 @@
 import { data } from 'autoprefixer'
 import { FaEthereum } from 'react-icons/fa'
 import Identicon from 'react-identicons'
-const CampaignDoners = () => {
+import Moment from 'react-moment'
+import { truncate } from '../store'
+
+const CampaignDoners = ({ donors }) => {
   return (
     <div className="flex flex-col justify-center items-start md:w-2/3 px-6 mx-auto">
         <div className="max-h-[calc(100vh_-_25rem)] overflow-y-auto
@@ -11,7 +14,7 @@ const CampaignDoners = () => {
                     <tr>
                         <th scope="col" 
                         className="text-sm font-medium
-                        px-6 py-4 text-left">Doner</th>
+                        px-6 py-4 text-left">Donor</th>
                         <th scope="col" 
                         className="text-sm font-medium
                         px-6 py-4 text-left">Donation</th>
@@ -24,33 +27,8 @@ const CampaignDoners = () => {
                     </tr>
                 </thead>
                 <tbody>
-                   {Array(10).fill().map((Donating, i) => (
-                     <tr key={i} className="border-b border-gray-200">
-                        <td className=" text-sm font-light
-                        px-6 py-4 whitespace-nowrap">
-                            <div className='flex justify-start items-center space-x-2'>
-                                <Identicon className="h-10 w-10 object-contain rounded-full shadow-md" 
-                                string={"0x2e...042a" + i}
-                                size={25}/>
-                                <span>0x2e...042{i}  </span>
-                            </div>
-                        </td>
-                        <td className=" text-sm font-light
-                        px-6 py-4 whitespace-nowrap">
-                            <small className='flex justify-start items-center'>
-                                <FaEthereum />
-                                <span className='text-gray-700 font-medium'>{3} ETH</span>
-                            </small>
-                        </td>
-                        <td className=" text-sm font-light
-                        px-6 py-4 whitespace-nowrap">
-                            {false ? 'Yes' : 'No'}
-                        </td>
-                        <td className=" text-sm font-light
-                        px-6 py-4 whitespace-nowrap">
-                            {new Date().getTime()}
-                        </td> 
-                    </tr>
+                   {donors.map((donor, i) => (
+                     <Donor key={i} donor={donor} />
                    ))}
                 </tbody>
             </table>
@@ -58,5 +36,37 @@ const CampaignDoners = () => {
     </div>
   )
 }
+
+
+const Donor = ({ donor }) => (
+    <tr  className="border-b border-gray-200">
+        <td className=" text-sm font-light
+        px-6 py-4 whitespace-nowrap">
+            <div className='flex justify-start items-center space-x-2'>
+            <Identicon className="h-10 w-10 object-contain rounded-full shadow-md" 
+            string={donor.owner}
+            size={25}/>
+            <span>{truncate(donor?.owner, 4,4,11)}</span>
+            </div>
+        </td>
+        <td className=" text-sm font-light
+        px-6 py-4 whitespace-nowrap">
+            <small className='flex justify-start items-center'>
+                <FaEthereum />
+                <span className='text-gray-700 font-medium'>{donor.contribution} ETH</span>
+            </small>
+        </td>
+        <td className=" text-sm font-light
+        px-6 py-4 whitespace-nowrap">
+            {donor.refunded? 'Yes' : 'No'}
+        </td>
+        <td className=" text-sm font-light
+        px-6 py-4 whitespace-nowrap">
+            <Moment fromNow>{donor.timestamp}</Moment>
+        </td> 
+    </tr>
+)
+
+
 
 export default CampaignDoners
