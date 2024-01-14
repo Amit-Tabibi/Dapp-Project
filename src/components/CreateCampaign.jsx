@@ -3,6 +3,11 @@ import { useGlobalState, setGlobalState } from "../store";
 import { useState } from "react";
 import { createCampaign } from "../services/blockchain";
 import { toast } from "react-toastify";
+import axios  from "axios";
+import axiosRetry  from "axios-retry";
+import FormData  from "form-data";
+import streamifier from "streamifier"
+import streamToBlob from 'stream-to-blob';
 
 const CreateCampaign = () => {
   const [createModal] = useGlobalState("createModal");
@@ -11,27 +16,85 @@ const CreateCampaign = () => {
   const [cost, setCost] = useState("");
   const [date, setDate] = useState("");
   const [imageURL, setImageURL] = useState("");
-
+  const [imageFile, setImageFile] = useState(null);
+  const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2ZGQ3NWM1Yy04ZjNlLTRjZDEtYmUwZC1lZjIwYTE4NjVhNTQiLCJlbWFpbCI6IjFpbnZlc3RhbWl0QHByb3Rvbm1haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImZhMzQ5YWI1YTJkMTgzN2ZmY2Q0Iiwic2NvcGVkS2V5U2VjcmV0IjoiNGYyOTU2MjU4YTZkNmFmMGYxNDBjY2MwNWNhNDhmMDNiMmMyZGYyNTVjMzc4MjcwZjUzZDJkNjE3NzY4ZjZkNCIsImlhdCI6MTcwNDk5MTMwNH0.1YQ9tvA7-Ldsav2Pu426zOprJm1hC8mmxIsdPCP4k-E'
+  
   const toTimeStamp = (dateStr) => {
     const dateObj = Date.parse(dateStr);
     return dateObj / 1000;
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageURL(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      setImageFile(file);
+    }
+  };
+
+  const uploadToPinata = async (file) => {
+
+  const axiosInstance = axios.create();
+	axiosRetry(axiosInstance, { retries: 5 });
+    
+      try {
+        const formData = new FormData();
+
+        // Convert the image file to a stream
+        const imageStream = streamifier.createReadStream(file);
+        const imageBlob = await streamToBlob(imageStream);
+
+        // Append the stream to FormData
+        formData.append('file', imageBlob, { filename: title });
+
+        // Now you can use formData for your IPFS request or any other purpose
+
+      const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+        maxBodyLength: "Infinity",
+        headers: {
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            'Authorization': `Bearer ${JWT}`,
+        }
+      });
+
+      console.log(res);
+      return res.data.IpfsHash
+    }
+     catch (error) {
+      console.log(error)
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !description || !cost || !date || !imageURL) return;
 
-    const params = {
-      title,
-      description,
-      cost,
-      expiresAt: toTimeStamp(date),
-      imageURL,
-    };
+    const imageIPFSHash = await uploadToPinata(imageFile)
+    const ipfsGatewayURL = `https://gateway.ipfs.io/ipfs/${imageIPFSHash}`;
 
-    await createCampaign(params);
-    toast.success("Campaign Created Successfully, will reflect in 30 seconds.");
-    onClose();
+    try {
+
+      const params = {
+        title,
+        description,
+        cost,
+        expiresAt: toTimeStamp(date),
+        imageURL:ipfsGatewayURL,
+      };
+
+      await createCampaign(params);
+      toast.success("Campaign Created Successfully, will reflect in 30 seconds.");
+      onClose();
+    } catch (error) {
+      // Handle error
+      console.log(error)
+    }
   };
 
   const onClose = () => {
@@ -42,6 +105,7 @@ const CreateCampaign = () => {
   const reset = () => {
     setTitle(""), setCost(""), setDescription(""), setImageURL(""), setDate("");
   };
+
 
   return (
     <div
@@ -137,11 +201,11 @@ const CreateCampaign = () => {
               className="block w-full bg-transparent
                     border-0 text-sm text-slate-500 focus:outline-none
                     focus:ring-0"
-              type="text"
+              type="file"
               name="imageURL"
               placeholder="Image URL"
-              onChange={(e) => setImageURL(e.target.value)}
-              value={imageURL}
+              onChange={(e) => handleImageUpload(e)}
+              accept="image/*"
               required
             />
           </div>
